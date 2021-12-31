@@ -96,7 +96,7 @@ stages:
                 inputs:
                   azureSubscription: $(ServiceConnection)
                   scriptType: filePath
-                  scriptPath: $(System.DefaultWorkingDirectory)/scripts/start-stop-triggers.ps1
+                  scriptPath: $(System.DefaultWorkingDirectory)/scripts/approve-private-link-connections.ps1
                   scriptArguments:
-                    -ResourceId /subscriptions/047fb0fd-1139-4b6a-b700-5fc15662bb6c/resourceGroups/rg-adf-csv-to-cosmos-dev/providers/Microsoft.Storage/storageAccounts/adfcsvcosmosdev
+                    -ResourceId '/subscriptions/047fb0fd-1139-4b6a-b700-5fc15662bb6c/resourceGroups/rg-adf-csv-to-cosmos-dev/providers/Microsoft.Storage/storageAccounts/adfcsvcosmosdev'
                   azurePowerShellVersion: latestVersion
