@@ -45,32 +45,35 @@ stages:
             inputs:
               command: custom
               customCommand: run build export $(Build.Repository.LocalPath)/datafactory /subscriptions/$(SubscriptionId)/resourceGroups/$(ResourceGroupDev)/providers/Microsoft.DataFactory/factories/$(DataFactoryNameDev) output
-          # Stop any triggers before deploying
-          - task: AzurePowerShell@5
-            displayName: Stop Triggers
-            inputs:
-              azureSubscription: $(ServiceConnection)
-              scriptType: filePath
-              scriptPath: $(System.DefaultWorkingDirectory)/scripts/stop-triggers.ps1
-              scriptArguments:
-                -DataFactoryName   $(DataFactoryNameDev) `
-                -ResourceGroupName $(ResourceGroupDev) `
-                -ArmTemplate '$(Build.Repository.LocalPath)/output/ARMTemplateForFactory.json'
-              azurePowerShellVersion: latestVersion
           - task: PublishPipelineArtifact@1
             inputs:
               targetPath: $(System.DefaultWorkingDirectory)/output
               artifact: arm
               publishLocation: pipeline
   - stage: DEV
+    variables:
+      - group: dev
     jobs:
       - deployment: Deploy
-        displayName: Display Data Factory
+        displayName: Deploy Data Factory
         environment: dev
         strategy:
           runOnce:
             deploy:
               steps:
+              - checkout: self
+              # Stop any triggers before deploying
+              - task: AzurePowerShell@5
+                displayName: Stop Triggers
+                inputs:
+                  azureSubscription: $(ServiceConnection)
+                  scriptType: filePath
+                  scriptPath: $(System.DefaultWorkingDirectory)/scripts/stop-triggers.ps1
+                  scriptArguments:
+                    -DataFactoryName   $(DataFactoryNameDev) `
+                    -ResourceGroupName $(ResourceGroupDev) `
+                    -ArmTemplate '$(Pipeline.Workspace)/arm/ARMTemplateForFactory.json'
+                  azurePowerShellVersion: latestVersion
               - task: AzureResourceManagerTemplateDeployment@3
                 displayName: Deploy ARM Template
                 inputs:
