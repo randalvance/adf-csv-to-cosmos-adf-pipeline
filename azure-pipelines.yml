@@ -50,3 +50,8 @@ stages:
               azureSubscription: $(ServiceConnection)
               scriptType: filePath
               scriptPath: $(System.DefaultWorkingDirectory)/scripts/stop-triggers.ps1
+              scriptArguments:
+                -DataFactoryName   $(DataFactoryNameDev) `
+                -ResourceGroupName $(ResourceGroupDev) `
+                -ArmTemplate '$(Build.Repository.LocalPath)/output/ARMTemplateForFactory.json'
+              azurePowerShellVersion: latestVersion
