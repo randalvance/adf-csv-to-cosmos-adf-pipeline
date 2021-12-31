@@ -1,0 +1,35 @@
+name: $(Build.DefinitionName)-$(Date:yyyyMMdd)-$(BuildID)
+
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: dev # Should contain SubscriptionId Variable
+  - name: DataFactoryNameDev
+    value: df-adf-csv-to-cosmos-dev
+  - name: ResourceGroupDev
+    value: rg-adf-csv-to-cosmos-adf-dev
+
+stages:
+  - stage: Build
+    jobs:
+      - job: build
+        steps:
+          - task: NodeTool@0
+            displayName: Install Node.js
+            inputs:
+              versionSpec: 16.x
+          - task: Npm@1
+            displayName: Install npm Packages
+            inputs:
+              command: install
+              verbose: true
+          # Validates all of the ADF resources in the repository. You will get the same validation errors as when "Validate All" is clicked
+          - task: Npm@1
+            displayName: 'Validate ADF resources'
+            inputs:
+              command: custom
+              customCommand: run build validate $(Build.Repository.LocalPath)/datafactory /subscriptions/$(SubscriptionId)/resourceGroups/$(ResourceGroupDev)/providers/Microsoft.DataFactory/factories/$(DataFactoryNameDev)
