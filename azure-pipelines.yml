@@ -7,7 +7,6 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  - group: dev # Should contain SubscriptionId Variable
   - name: DataFactoryNameDev
     value: df-adf-csv-to-cosmos-dev
   - name: ResourceGroupDev
@@ -15,6 +14,8 @@ variables:
 
 stages:
   - stage: Build
+    variables:
+      - group: dev # Should contain SubscriptionId Variable
     jobs:
       - job: build
         steps:
