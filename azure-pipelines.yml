@@ -62,12 +62,21 @@ stages:
               targetPath: $(System.DefaultWorkingDirectory)/output
               artifact: arm
               publishLocation: pipeline
-          # Deploy to Dev Data Factory
-          # - task: AzureResourceManagerTemplateDeployment@3
-          #   displayName: Deploy ARM Template
-          #   inputs:
-          #     azureResourceManagerConnection: $(ServiceConnection)
-          #     subscriptionId: $(SubscriptionId)
-          #     resourceGroupName: $(ResourceGroupDev)
-          #     location: $(Location)
-          #     csmFile: $(Build.Repository.LocalPath)/output/ARMTemplateForFactory.json
+  - stage: DEV
+    jobs:
+      - deployment: Deploy
+        displayName: Display Data Factory
+        environment: dev
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - task: AzureResourceManagerTemplateDeployment@3
+                displayName: Deploy ARM Template
+                inputs:
+                  azureResourceManagerConnection: $(ServiceConnection)
+                  subscriptionId: $(SubscriptionId)
+                  resourceGroupName: $(ResourceGroupDev)
+                  location: $(Location)
+                  csmFile: $(Pipeline.Workspace)/arm/ARMTemplateForFactory.json
+                  csmParametersFile: $(Pipeline.Workspace)/arm/ARMTemplateParametersForFactory.json
