@@ -12,7 +12,7 @@ variables:
   - name: DataFactoryNameDev
     value: df-adf-csv-to-cosmos-dev
   - name: ResourceGroupDev
-    value: rg-adf-csv-to-cosmos-adf-dev
+    value: rg-adf-csv-to-cosmos-dev
   - name: Location
     value: japaneast
 
@@ -65,21 +65,21 @@ stages:
               steps:
               - checkout: self
               # Stop any triggers before deploying
-              # - task: AzurePowerShell@5
-              #   displayName: Stop Triggers
-              #   inputs:
-              #     azureSubscription: $(ServiceConnection)
-              #     scriptType: filePath
-              #     scriptPath: $(System.DefaultWorkingDirectory)/scripts/start-stop-triggers.ps1
-              #     scriptArguments:
-              #       -DataFactoryName   $(DataFactoryNameDev) `
-              #       -ResourceGroupName $(ResourceGroupDev) `
-              #       -armTemplate '$(Pipeline.Workspace)/arm/ARMTemplateForFactory.json' `
-              #       -predeployment $false `
-              #       -deleteDeployment $true
-              #     azurePowerShellVersion: latestVersion
+              - task: AzurePowerShell@5
+                displayName: Stop Triggers
+                inputs:
+                  azureSubscription: $(ServiceConnection)
+                  scriptType: filePath
+                  scriptPath: $(System.DefaultWorkingDirectory)/scripts/start-stop-triggers.ps1
+                  scriptArguments:
+                    -DataFactoryName   $(DataFactoryNameDev) `
+                    -ResourceGroupName $(ResourceGroupDev) `
+                    -armTemplate '$(Pipeline.Workspace)/arm/ARMTemplateForFactory.json' `
+                    -predeployment $true `
+                    -deleteDeployment $false
+                  azurePowerShellVersion: latestVersion
               - task: AzureCLI@2
-                displayName: Deploy Bicep
+                displayName: Deploy ARM Template
                 inputs:
                   azureSubscription: $(ServiceConnection)
                   scriptType: bash
