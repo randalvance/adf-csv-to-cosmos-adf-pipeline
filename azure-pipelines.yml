@@ -53,6 +53,8 @@ stages:
   - stage: DEV
     variables:
       - group: dev
+      - name: Environment
+        value: dev
     jobs:
       - deployment: Deploy
         displayName: Deploy Data Factory
@@ -76,12 +78,15 @@ stages:
               #       -predeployment $false `
               #       -deleteDeployment $true
               #     azurePowerShellVersion: latestVersion
-              - task: AzureResourceManagerTemplateDeployment@3
-                displayName: Deploy ARM Template
+              - task: AzureCLI@2
+                displayName: Deploy Bicep
                 inputs:
-                  azureResourceManagerConnection: $(ServiceConnection)
-                  subscriptionId: $(SubscriptionId)
-                  resourceGroupName: $(ResourceGroupDev)
-                  location: $(Location)
-                  csmFile: $(Pipeline.Workspace)/arm/ARMTemplateForFactory.json
-                  csmParametersFile: $(Pipeline.Workspace)/arm/ARMTemplateParametersForFactory.json
+                  azureSubscription: $(ServiceConnection)
+                  scriptType: bash
+                  scriptLocation: inlineScript
+                  inlineScript: |
+                    az deployment sub create \
+                      --location $(Location) \
+                      --template-file $(Pipeline.Workspace)/arm/ARMTemplateForFactory.json \
+                      --name adf-csv-to-cosmos-adf-$(Build.BuildId)-$(Environment) \
+                      --parameters $(Pipeline.Workspace)/arm/ARMTemplateParametersForFactory.json
