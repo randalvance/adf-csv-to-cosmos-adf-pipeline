@@ -13,6 +13,8 @@ variables:
     value: df-adf-csv-to-cosmos-dev
   - name: ResourceGroupDev
     value: rg-adf-csv-to-cosmos-adf-dev
+  - name: Location
+    value: japaneast
 
 stages:
   - stage: Build
@@ -55,3 +57,17 @@ stages:
                 -ResourceGroupName $(ResourceGroupDev) `
                 -ArmTemplate '$(Build.Repository.LocalPath)/output/ARMTemplateForFactory.json'
               azurePowerShellVersion: latestVersion
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: $(System.DefaultWorkingDirectory)/output
+              artifact: arm
+              publishLocation: pipeline
+          # Deploy to Dev Data Factory
+          # - task: AzureResourceManagerTemplateDeployment@3
+          #   displayName: Deploy ARM Template
+          #   inputs:
+          #     azureResourceManagerConnection: $(ServiceConnection)
+          #     subscriptionId: $(SubscriptionId)
+          #     resourceGroupName: $(ResourceGroupDev)
+          #     location: $(Location)
+          #     csmFile: $(Build.Repository.LocalPath)/output/ARMTemplateForFactory.json
