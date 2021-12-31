@@ -68,11 +68,13 @@ stages:
                 inputs:
                   azureSubscription: $(ServiceConnection)
                   scriptType: filePath
-                  scriptPath: $(System.DefaultWorkingDirectory)/scripts/stop-triggers.ps1
+                  scriptPath: $(System.DefaultWorkingDirectory)/scripts/start-stop-triggers.ps1
                   scriptArguments:
                     -DataFactoryName   $(DataFactoryNameDev) `
                     -ResourceGroupName $(ResourceGroupDev) `
-                    -ArmTemplate '$(Pipeline.Workspace)/arm/ARMTemplateForFactory.json'
+                    -armTemplate '$(Pipeline.Workspace)/arm/ARMTemplateForFactory.json' `
+                    -predeployment $false `
+                    -deleteDeployment $true
                   azurePowerShellVersion: latestVersion
               - task: AzureResourceManagerTemplateDeployment@3
                 displayName: Deploy ARM Template
