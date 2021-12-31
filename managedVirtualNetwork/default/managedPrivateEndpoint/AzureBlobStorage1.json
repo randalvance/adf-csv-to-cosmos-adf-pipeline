@@ -1,0 +1,7 @@
+{
+	"name": "AzureBlobStorage1",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/047fb0fd-1139-4b6a-b700-5fc15662bb6c/resourceGroups/rg-adf-csv-to-cosmos-dev/providers/Microsoft.Storage/storageAccounts/adfcsvcosmosdev",
+		"groupId": "blob"
+	}
+}
