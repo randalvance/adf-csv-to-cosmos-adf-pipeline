@@ -30,7 +30,21 @@ stages:
               verbose: true
           # Validates all of the ADF resources in the repository. You will get the same validation errors as when "Validate All" is clicked
           - task: Npm@1
-            displayName: 'Validate ADF resources'
+            displayName: Validate ADF Resources
             inputs:
               command: custom
               customCommand: run build validate $(Build.Repository.LocalPath)/datafactory /subscriptions/$(SubscriptionId)/resourceGroups/$(ResourceGroupDev)/providers/Microsoft.DataFactory/factories/$(DataFactoryNameDev)
+          # Validate and then generate the ARM template into the destination folder. Same as clicking "Publish" from UX
+          # The ARM template generated is not published to the ‘Live’ version of the factory.
+          - task: Npm@1
+            displayName: Validate and Generate ARM Template
+            inputs:
+              command: custom
+              customCommand: run build export $(Build.Repository.LocalPath)/datafactory /subscriptions/$(SubscriptionId)/resourceGroups/$(ResourceGroupDev)/providers/Microsoft.DataFactory/factories/$(DataFactoryNameDev) output
+          # Stop any triggers before deploying
+          - task: AzurePowerShell@5
+            displayName: Stop Triggers
+            inputs:
+              azureSubscription: $(ServiceConnection)
+              scriptType: filePath
+              scriptPath: $(System.DefaultWorkingDirectory)/scripts/stop-triggers.ps1
