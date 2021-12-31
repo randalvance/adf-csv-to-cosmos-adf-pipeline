@@ -86,7 +86,7 @@ stages:
                   scriptLocation: inlineScript
                   inlineScript: |
                     az deployment group create \
-                      --resource-group $(ResourceGroupDev)
+                      --resource-group $(ResourceGroupDev) \
                       --location $(Location) \
                       --template-file $(Pipeline.Workspace)/arm/ARMTemplateForFactory.json \
                       --name adf-csv-to-cosmos-adf-$(Build.BuildId)-$(Environment) \
