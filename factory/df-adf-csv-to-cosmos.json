@@ -1,0 +1,9 @@
+{
+	"name": "df-adf-csv-to-cosmos",
+	"location": "japaneast",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "0b43e4f2-9933-42ca-af91-0865ef241d65",
+		"tenantId": "0f1abb8a-fd9a-4620-8179-4a08358321f7"
+	}
+}
