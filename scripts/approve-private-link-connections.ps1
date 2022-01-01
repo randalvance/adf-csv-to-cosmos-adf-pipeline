@@ -15,8 +15,8 @@ $privateEndpoints
 # Approve all Private Endpoint Connection
 Write-Output "Approving all Private Link Endpoint Connections"
 foreach ($privateEndpoint in $privateEndpoints) {
-	Write-Output $privateEndpoint.PrivateLinkServiceConnectionStateText
-	if ($privateEndpoint.PrivateLinkServiceConnectionStateText -eq 'Pending') {
+	Write-Output $privateEndpoint.PrivateLinkServiceConnectionState.Status
+	if ($privateEndpoint.PrivateLinkServiceConnectionState.Status -eq 'Pending') {
 		$id = $privateEndpoint.id
 		Approve-AzPrivateEndpointConnection -ResourceId "${id}"
 	}
