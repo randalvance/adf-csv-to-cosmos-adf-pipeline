@@ -1,8 +1,3 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT license.
-
-# Define script arguments
-[CmdletBinding()]
 param (
     [Parameter(Mandatory = $true)] [String] $ResourceId
 )
@@ -14,6 +9,7 @@ $privateEndpoints
 
 # Approve all Private Endpoint Connection
 Write-Output "Approving all Private Link Endpoint Connections"
+
 foreach ($privateEndpoint in $privateEndpoints) {
 	if ($privateEndpoint.PrivateLinkServiceConnectionState.Status -eq 'Pending') {
 		$id = $privateEndpoint.id
