@@ -90,6 +90,7 @@ stages:
                       --template-file $(Pipeline.Workspace)/arm/ARMTemplateForFactory.json \
                       --name adf-csv-to-cosmos-adf-$(Build.BuildId)-$(Environment) \
                       --parameters $(Pipeline.Workspace)/arm/ARMTemplateParametersForFactory.json
+                      --parameters BlobPrivateEndpoint_properties_privateLinkResourceId=/subscriptions/$(SubscriptionId)/resourceGroups/$(ResourceGroupDev)/providers/Microsoft.Storage/storageAccounts/adfcsvcosmos$(Environment)
               # Approve Private Link Connections
               - task: AzurePowerShell@5
                 displayName: Approve Private Endpoint Connections
@@ -98,5 +99,5 @@ stages:
                   scriptType: filePath
                   scriptPath: $(System.DefaultWorkingDirectory)/scripts/approve-private-link-connections.ps1
                   scriptArguments:
-                    -ResourceId '/subscriptions/047fb0fd-1139-4b6a-b700-5fc15662bb6c/resourceGroups/rg-adf-csv-to-cosmos-dev/providers/Microsoft.Storage/storageAccounts/adfcsvcosmosdev'
+                    -ResourceId '/subscriptions/$(SubscriptionId)/resourceGroups/$(ResourceGroupDev)/providers/Microsoft.Storage/storageAccounts/adfcsvcosmos$(Environment)'
                   azurePowerShellVersion: latestVersion
