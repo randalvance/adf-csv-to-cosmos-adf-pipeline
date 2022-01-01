@@ -89,7 +89,7 @@ stages:
                       --resource-group $(ResourceGroupDev) \
                       --template-file $(Pipeline.Workspace)/arm/ARMTemplateForFactory.json \
                       --name adf-csv-to-cosmos-adf-$(Build.BuildId)-$(Environment) \
-                      --parameters $(Pipeline.Workspace)/arm/ARMTemplateParametersForFactory.json
+                      --parameters $(Pipeline.Workspace)/arm/ARMTemplateParametersForFactory.json \
                       --parameters BlobPrivateEndpoint_properties_privateLinkResourceId=/subscriptions/$(SubscriptionId)/resourceGroups/$(ResourceGroupDev)/providers/Microsoft.Storage/storageAccounts/adfcsvcosmos$(Environment)
               # Approve Private Link Connections
               - task: AzurePowerShell@5
