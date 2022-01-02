@@ -18,9 +18,24 @@
 					"dataflow": {
 						"referenceName": "DataFlow",
 						"type": "DataFlowReference",
+						"parameters": {
+							"identifier": {
+								"value": "'@{pipeline().parameters.identifier}'",
+								"type": "Expression"
+							}
+						},
 						"datasetParameters": {
 							"Blob": {
-								"fileName": "missing_required_fields.csv"
+								"fileName": {
+									"value": "@concat(pipeline().parameters.identifier,'.csv')",
+									"type": "Expression"
+								}
+							},
+							"CosmosDB": {
+								"collection": "people"
+							},
+							"CosmosDBErrors": {
+								"collection": "peopleErrors"
 							}
 						}
 					},
