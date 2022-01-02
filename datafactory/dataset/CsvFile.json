@@ -19,6 +19,7 @@
 					"value": "@dataset().fileName",
 					"type": "Expression"
 				},
+				"folderPath": "xx",
 				"container": "uploaded"
 			},
 			"columnDelimiter": ",",
