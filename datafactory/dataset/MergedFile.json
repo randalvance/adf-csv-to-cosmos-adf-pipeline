@@ -1,0 +1,26 @@
+{
+	"name": "MergedFile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "BlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"mergedFileName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().mergedFileName",
+					"type": "Expression"
+				},
+				"container": "output"
+			}
+		}
+	}
+}
