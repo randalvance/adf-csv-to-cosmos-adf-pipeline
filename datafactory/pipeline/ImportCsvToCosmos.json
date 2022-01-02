@@ -27,13 +27,9 @@
 						}
 					},
 					"sink": {
-						"type": "JsonSink",
-						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings"
-						},
-						"formatSettings": {
-							"type": "JsonWriteSettings"
-						}
+						"type": "CosmosDbSqlApiSink",
+						"writeBehavior": "upsert",
+						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
 					"translator": {
@@ -83,14 +79,8 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "JsonOutput",
-						"type": "DatasetReference",
-						"parameters": {
-							"fileName": {
-								"value": "@concat(pipeline().parameters.identifier,'.json')",
-								"type": "Expression"
-							}
-						}
+						"referenceName": "CosmosDbDestination",
+						"type": "DatasetReference"
 					}
 				]
 			}
