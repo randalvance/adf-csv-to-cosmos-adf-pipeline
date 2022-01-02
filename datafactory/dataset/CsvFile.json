@@ -16,7 +16,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": {
-					"value": "@dataset().fileName",
+					"value": "missing_required_fields.csv",
 					"type": "Expression"
 				},
 				"container": "uploaded"

@@ -3,11 +3,11 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ImportData",
-				"type": "Copy",
+				"name": "Data Flow",
+				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
-					"timeout": "7.00:00:00",
+					"timeout": "1.00:00:00",
 					"retry": 0,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
@@ -15,84 +15,21 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobStorageReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
+					"dataflow": {
+						"referenceName": "DataFlow",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"Blob": {
+								"fileName": "missing_required_fields.csv"
+							}
 						}
 					},
-					"sink": {
-						"type": "JsonSink",
-						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings"
-						},
-						"formatSettings": {
-							"type": "JsonWriteSettings"
-						}
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
 					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"name": "seq",
-									"type": "String"
-								},
-								"sink": {
-									"path": "$.seq"
-								}
-							},
-							{
-								"source": {
-									"name": "first",
-									"type": "String"
-								},
-								"sink": {
-									"path": "$.first"
-								}
-							},
-							{
-								"source": {
-									"name": "last",
-									"type": "String"
-								},
-								"sink": {
-									"path": "$.last"
-								}
-							}
-						]
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "CsvFile",
-						"type": "DatasetReference",
-						"parameters": {
-							"fileName": {
-								"value": "@concat(pipeline().parameters.identifier,'.csv')",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "JsonOutput",
-						"type": "DatasetReference",
-						"parameters": {
-							"fileName": {
-								"value": "@concat(pipeline().parameters.identifier,'.json')",
-								"type": "Expression"
-							}
-						}
-					}
-				]
+					"traceLevel": "Fine"
+				}
 			}
 		],
 		"parameters": {

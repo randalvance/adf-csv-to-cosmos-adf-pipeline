@@ -1,20 +1,16 @@
 {
-	"name": "JsonOutput",
+	"name": "Json1",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "BlobStorage",
+			"referenceName": "DummyBlobStorage",
 			"type": "LinkedServiceReference"
-		},
-		"parameters": {
-			"fileName": {
-				"type": "string"
-			}
 		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "filename.json",
 				"container": "output"
 			}
 		},
