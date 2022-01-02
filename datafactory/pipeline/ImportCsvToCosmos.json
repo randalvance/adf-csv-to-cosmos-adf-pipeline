@@ -45,7 +45,7 @@
 									"type": "String"
 								},
 								"sink": {
-									"path": "$"
+									"path": "$.seq"
 								}
 							},
 							{
@@ -54,7 +54,7 @@
 									"type": "String"
 								},
 								"sink": {
-									"path": "$"
+									"path": "$.first"
 								}
 							},
 							{
@@ -63,7 +63,7 @@
 									"type": "String"
 								},
 								"sink": {
-									"path": "$"
+									"path": "$.last"
 								}
 							}
 						]
