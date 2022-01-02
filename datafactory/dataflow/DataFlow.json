@@ -15,14 +15,14 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "Json1",
+						"referenceName": "CosmosDbDestination",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "CosmosDB"
 				}
 			],
 			"transformations": [],
-			"script": "source(output(\n\t\tseq as string,\n\t\tfirst as string,\n\t\tlast as string,\n\t\temail as string,\n\t\tgender as string,\n\t\tphone as string,\n\t\tpostal as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> Blob\nBlob sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+			"script": "source(output(\n\t\tseq as string,\n\t\tfirst as string,\n\t\tlast as string,\n\t\temail as string,\n\t\tgender as string,\n\t\tphone as string,\n\t\tpostal as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> Blob\nBlob sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'document',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CosmosDB"
 		}
 	}
 }
