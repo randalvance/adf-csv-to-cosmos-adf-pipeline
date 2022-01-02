@@ -90,14 +90,24 @@ stages:
                       --template-file $(Pipeline.Workspace)/arm/ARMTemplateForFactory.json \
                       --name adf-csv-to-cosmos-adf-$(Build.BuildId)-$(Environment) \
                       --parameters $(Pipeline.Workspace)/arm/ARMTemplateParametersForFactory.json \
-                      --parameters BlobPrivateEndpoint_properties_privateLinkResourceId=/subscriptions/$(SubscriptionId)/resourceGroups/$(ResourceGroupDev)/providers/Microsoft.Storage/storageAccounts/adfcsvcosmos$(Environment)
+                      --parameters BlobPrivateEndpoint_properties_privateLinkResourceId=/subscriptions/$(SubscriptionId)/resourceGroups/$(ResourceGroupDev)/providers/Microsoft.Storage/storageAccounts/adfcsvcosmos$(Environment) \
+                      --parameters CosmosDbPrivateEndpoint_properties_privateLinkResourceId=/subscriptions/$(SubscriptionId)/resourceGroups/$(ResourceGroupDev)/providers/Microsoft.DocumentDB/databaseAccounts/cdb-adf-csv-to-cosmos-$(Environment)
               # Approve Private Link Connections
               - task: AzurePowerShell@5
-                displayName: Approve Private Endpoint Connections
+                displayName: Approve Private Endpoint Connections - Blob Storage
                 inputs:
                   azureSubscription: $(ServiceConnection)
                   scriptType: filePath
                   scriptPath: $(System.DefaultWorkingDirectory)/scripts/approve-private-link-connections.ps1
                   scriptArguments:
                     -ResourceId '/subscriptions/$(SubscriptionId)/resourceGroups/$(ResourceGroupDev)/providers/Microsoft.Storage/storageAccounts/adfcsvcosmos$(Environment)'
+                  azurePowerShellVersion: latestVersion
+              - task: AzurePowerShell@5
+                displayName: Approve Private Endpoint Connections - Cosmos DB
+                inputs:
+                  azureSubscription: $(ServiceConnection)
+                  scriptType: filePath
+                  scriptPath: $(System.DefaultWorkingDirectory)/scripts/approve-private-link-connections.ps1
+                  scriptArguments:
+                    -ResourceId '/subscriptions/$(SubscriptionId)/resourceGroups/$(ResourceGroupDev)/providers/Microsoft.DocumentDB/databaseAccounts/cdb-adf-csv-to-cosmos-$(Environment)'
                   azurePowerShellVersion: latestVersion
