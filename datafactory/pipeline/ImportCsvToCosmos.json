@@ -18,15 +18,9 @@
 					"dataflow": {
 						"referenceName": "DataFlow",
 						"type": "DataFlowReference",
-						"parameters": {
-							"fileName": "'missing_required_fields.csv'"
-						},
 						"datasetParameters": {
-							"BlobStorageX": {
-								"fileName": {
-									"value": "@concat(pipeline().parameters.identifier,'.csv')",
-									"type": "Expression"
-								}
+							"Blob": {
+								"fileName": "missing_required_fields.csv"
 							}
 						}
 					},
