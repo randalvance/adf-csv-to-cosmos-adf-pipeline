@@ -5,7 +5,7 @@
 		"type": "CosmosDb",
 		"typeProperties": {
 			"accountEndpoint": "https://cdb-adf-csv-to-cosmos-dev.documents.azure.com:443/",
-			"database": "people"
+			"database": "awesomedb"
 		},
 		"connectVia": {
 			"referenceName": "AutoResolveIntegrationRuntime",
