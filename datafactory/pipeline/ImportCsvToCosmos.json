@@ -32,9 +32,15 @@
 						}
 					},
 					"sink": {
-						"type": "BinarySink",
+						"type": "DelimitedTextSink",
 						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings"
+							"type": "AzureBlobStorageWriteSettings",
+							"copyBehavior": "MergeFiles"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
 						}
 					},
 					"enableStaging": false
@@ -47,14 +53,23 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "MergedBlobOutput",
-						"type": "DatasetReference"
+						"referenceName": "MergedFile",
+						"type": "DatasetReference",
+						"parameters": {
+							"fileName": {
+								"value": "@pipeline().parameters.mergedFileName",
+								"type": "Expression"
+							}
+						}
 					}
 				]
 			}
 		],
 		"parameters": {
 			"chunkedFolder": {
+				"type": "string"
+			},
+			"mergedFileName": {
 				"type": "string"
 			}
 		},
