@@ -1,0 +1,15 @@
+{
+	"name": "DummyCosmosDB",
+	"properties": {
+		"annotations": [],
+		"type": "CosmosDb",
+		"typeProperties": {
+			"accountEndpoint": "https://resume-visualizer-randal-test.documents.azure.com:443/",
+			"database": "test-db"
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
