@@ -1,0 +1,15 @@
+{
+	"name": "CosmosPeopleDB",
+	"properties": {
+		"annotations": [],
+		"type": "CosmosDb",
+		"typeProperties": {
+			"accountEndpoint": "https://cdb-adf-csv-to-cosmos-dev.documents.azure.com:443/",
+			"database": "people"
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
