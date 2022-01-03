@@ -22,6 +22,10 @@
 							"identifier": {
 								"value": "'@{pipeline().parameters.identifier}'",
 								"type": "Expression"
+							},
+							"pipelineRunId": {
+								"value": "'@{pipeline().RunId}'",
+								"type": "Expression"
 							}
 						},
 						"datasetParameters": {
