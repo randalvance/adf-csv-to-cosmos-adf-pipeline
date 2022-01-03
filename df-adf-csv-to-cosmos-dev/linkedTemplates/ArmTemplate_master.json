@@ -1,0 +1,70 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "df-adf-csv-to-cosmos-dev"
+		},
+		"CosmosPeopleDB_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosPeopleDB'"
+		},
+		"BlobStorage_properties_typeProperties_serviceEndpoint": {
+			"type": "string",
+			"defaultValue": "https://adfcsvcosmosdev.blob.core.windows.net"
+		},
+		"BlobPrivateEndpoint_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/047fb0fd-1139-4b6a-b700-5fc15662bb6c/resourceGroups/rg-adf-csv-to-cosmos-dev/providers/Microsoft.Storage/storageAccounts/adfcsvcosmosdev"
+		},
+		"BlobPrivateEndpoint_properties_groupId": {
+			"type": "string",
+			"defaultValue": "blob"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "df-adf-csv-to-cosmos-dev_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"CosmosPeopleDB_connectionString": {
+						"value": "[parameters('CosmosPeopleDB_connectionString')]"
+					},
+					"BlobStorage_properties_typeProperties_serviceEndpoint": {
+						"value": "[parameters('BlobStorage_properties_typeProperties_serviceEndpoint')]"
+					},
+					"BlobPrivateEndpoint_properties_privateLinkResourceId": {
+						"value": "[parameters('BlobPrivateEndpoint_properties_privateLinkResourceId')]"
+					},
+					"BlobPrivateEndpoint_properties_groupId": {
+						"value": "[parameters('BlobPrivateEndpoint_properties_groupId')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
