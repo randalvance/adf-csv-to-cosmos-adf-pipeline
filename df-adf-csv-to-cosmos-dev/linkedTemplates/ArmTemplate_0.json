@@ -390,16 +390,10 @@
 										}
 									},
 									"CosmosDB": {
-										"collection": {
-											"value": "'people'",
-											"type": "Expression"
-										}
+										"collection": "people"
 									},
 									"CosmosDBErrors": {
-										"collection": {
-											"value": "'peopleErrors'",
-											"type": "Expression"
-										}
+										"collection": "peopleErrors"
 									}
 								}
 							},
