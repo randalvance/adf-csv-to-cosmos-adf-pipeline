@@ -15,14 +15,18 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "Json1",
+						"referenceName": "CosmosDB",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
 				}
 			],
-			"transformations": [],
-			"script": "source(output(\n\t\tseq as string,\n\t\tfirst as string,\n\t\tlast as string,\n\t\temail as string,\n\t\tgender as string,\n\t\tphone as string,\n\t\tpostal as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> DataSource1\nDataSource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tseq,\n\t\tfirst,\n\t\tlast,\n\t\temail,\n\t\tgender,\n\t\tphone,\n\t\tpostal\n\t)) ~> sink1"
+			"transformations": [
+				{
+					"name": "AlterRow1"
+				}
+			],
+			"script": "source(output(\n\t\tseq as string,\n\t\tfirst as string,\n\t\tlast as string,\n\t\temail as string,\n\t\tgender as string,\n\t\tphone as string,\n\t\tpostal as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> DataSource1\nDataSource1 alterRow(upsertIf(true())) ~> AlterRow1\nAlterRow1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tformat: 'document',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tseq,\n\t\tfirst,\n\t\tlast,\n\t\temail,\n\t\tgender,\n\t\tphone,\n\t\tpostal\n\t)) ~> sink1"
 		}
 	}
 }
