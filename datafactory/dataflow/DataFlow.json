@@ -15,14 +15,14 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "CosmosDbDestination",
+						"referenceName": "CosmosDB",
 						"type": "DatasetReference"
 					},
 					"name": "CosmosDB"
 				},
 				{
 					"dataset": {
-						"referenceName": "CosmosDbDestination",
+						"referenceName": "CosmosDB",
 						"type": "DatasetReference"
 					},
 					"name": "CosmosDBErrors"
