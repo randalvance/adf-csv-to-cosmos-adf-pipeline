@@ -19,8 +19,8 @@
 						"referenceName": "DataFlow",
 						"type": "DataFlowReference",
 						"parameters": {
-							"identifier": {
-								"value": "'@{pipeline().parameters.identifier}'",
+							"pipelineRunId": {
+								"value": "'@{pipeline().RunId}'",
 								"type": "Expression"
 							}
 						},
