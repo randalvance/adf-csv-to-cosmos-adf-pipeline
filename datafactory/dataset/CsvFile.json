@@ -2,7 +2,7 @@
 	"name": "CsvFile",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "BlobStorage",
+			"referenceName": "BlobInputStorage",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
