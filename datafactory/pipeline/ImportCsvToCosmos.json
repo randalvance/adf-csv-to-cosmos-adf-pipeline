@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Data Flow",
+				"name": "dataflow1",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,26 +16,20 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DataFlow",
+						"referenceName": "dataflow1",
 						"type": "DataFlowReference",
-						"parameters": {
-							"identifier": {
-								"value": "'@{pipeline().parameters.identifier}'",
-								"type": "Expression"
-							}
-						},
 						"datasetParameters": {
-							"Blob": {
+							"DataSource1": {
 								"fileName": {
 									"value": "@concat(pipeline().parameters.identifier,'.csv')",
 									"type": "Expression"
 								}
 							},
-							"CosmosDB": {
-								"collection": "people"
-							},
-							"CosmosDBErrors": {
-								"collection": "peopleErrors"
+							"sink1": {
+								"fileName": {
+									"value": "@concat(pipeline().parameters.identifier,'.json')",
+									"type": "Expression"
+								}
 							}
 						}
 					},
