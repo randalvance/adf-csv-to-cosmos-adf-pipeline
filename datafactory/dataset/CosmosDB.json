@@ -5,11 +5,19 @@
 			"referenceName": "CosmosDb",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"collection": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "CosmosDbSqlApiCollection",
 		"schema": {},
 		"typeProperties": {
-			"collectionName": "people"
+			"collectionName": {
+				"value": "@dataset().collection",
+				"type": "Expression"
+			}
 		}
 	}
 }
