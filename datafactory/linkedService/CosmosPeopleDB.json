@@ -6,7 +6,7 @@
 		"type": "CosmosDb",
 		"typeProperties": {
 			"connectionString": "AccountEndpoint=https://cdb-adf-csv-to-cosmos-dev.documents.azure.com:443/;Database=awesomedb;",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEYyNzI3NjE3LTk1RjgtNENERi04MzQzLTU0Nzc3N0RFOEYyNl9kZDMxNWEwNy1iYTJjLTRhNTMtYTBjNS1mMjY4OTQwZWYyYmYiDQp9"
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEYyNzI3NjE3LTk1RjgtNENERi04MzQzLTU0Nzc3N0RFOEYyNl8yNTQ3NWMzNy03OWYwLTQzNTAtYTMxNS0wOGUyOTVmOTYxZDciDQp9"
 		},
 		"connectVia": {
 			"referenceName": "AutoResolveIntegrationRuntime",

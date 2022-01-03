@@ -1,5 +1,5 @@
 {
-	"name": "CosmosDbDestination",
+	"name": "CosmosDB",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "CosmosPeopleDB",
