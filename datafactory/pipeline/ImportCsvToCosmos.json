@@ -24,12 +24,6 @@
 									"value": "@concat(pipeline().parameters.identifier,'.csv')",
 									"type": "Expression"
 								}
-							},
-							"sink1": {
-								"fileName": {
-									"value": "@concat(pipeline().parameters.identifier,'.json')",
-									"type": "Expression"
-								}
 							}
 						}
 					},
