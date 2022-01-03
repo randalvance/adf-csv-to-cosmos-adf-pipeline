@@ -147,11 +147,19 @@
 					"referenceName": "CosmosDb",
 					"type": "LinkedServiceReference"
 				},
+				"parameters": {
+					"collection": {
+						"type": "string"
+					}
+				},
 				"annotations": [],
 				"type": "CosmosDbSqlApiCollection",
 				"schema": {},
 				"typeProperties": {
-					"collectionName": "people"
+					"collectionName": {
+						"value": "@dataset().collection",
+						"type": "Expression"
+					}
 				}
 			},
 			"dependsOn": [
@@ -353,7 +361,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "dataflow1",
+						"name": "DataFlow",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -366,17 +374,33 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "dataflow1",
+								"referenceName": "DataFlow",
 								"type": "DataFlowReference",
-								"parameters": {},
+								"parameters": {
+									"identifier": {
+										"value": "'@{pipeline().parameters.identifier}'",
+										"type": "Expression"
+									}
+								},
 								"datasetParameters": {
-									"DataSource1": {
+									"Blob": {
 										"fileName": {
 											"value": "@concat(pipeline().parameters.identifier,'.csv')",
 											"type": "Expression"
 										}
 									},
-									"sink1": {}
+									"CosmosDB": {
+										"collection": {
+											"value": "'people'",
+											"type": "Expression"
+										}
+									},
+									"CosmosDBErrors": {
+										"collection": {
+											"value": "'peopleErrors'",
+											"type": "Expression"
+										}
+									}
 								}
 							},
 							"staging": {},
@@ -400,7 +424,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/dataflow1')]",
+				"[concat(variables('factoryId'), '/dataflows/DataFlow')]",
 				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
 			]
 		}
