@@ -60,14 +60,14 @@
 					"AzureKeyVault_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVault_properties_typeProperties_baseUrl')]"
 					},
+					"BlobInputStorage_properties_typeProperties_serviceEndpoint": {
+						"value": "[parameters('BlobInputStorage_properties_typeProperties_serviceEndpoint')]"
+					},
 					"BlobPrivateEndpoint_properties_privateLinkResourceId": {
 						"value": "[parameters('BlobPrivateEndpoint_properties_privateLinkResourceId')]"
 					},
 					"BlobPrivateEndpoint_properties_groupId": {
 						"value": "[parameters('BlobPrivateEndpoint_properties_groupId')]"
-					},
-					"BlobInputStorage_properties_typeProperties_serviceEndpoint": {
-						"value": "[parameters('BlobInputStorage_properties_typeProperties_serviceEndpoint')]"
 					}
 				}
 			},
