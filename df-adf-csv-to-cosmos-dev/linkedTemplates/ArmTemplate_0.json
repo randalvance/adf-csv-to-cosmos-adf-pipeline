@@ -358,9 +358,9 @@
 								}
 							},
 							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
+							"integrationRuntime": {
+								"referenceName": "MyIntegrationRuntime",
+								"type": "IntegrationRuntimeReference"
 							},
 							"traceLevel": "Fine"
 						}
@@ -379,7 +379,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/DataFlow')]",
-				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+				"[concat(variables('factoryId'), '/integrationRuntimes/MyIntegrationRuntime')]"
 			]
 		}
 	]
