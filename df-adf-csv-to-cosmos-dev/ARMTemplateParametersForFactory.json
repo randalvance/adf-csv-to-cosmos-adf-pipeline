@@ -5,10 +5,10 @@
 		"factoryName": {
 			"value": "df-adf-csv-to-cosmos-dev"
 		},
-		"CosmosPeopleDB_connectionString": {
-			"value": ""
+		"AzureKeyVault_properties_typeProperties_baseUrl": {
+			"value": "https://my-keyvault-randal.vault.azure.net/"
 		},
-		"BlobStorage_properties_typeProperties_serviceEndpoint": {
+		"BlobInputStorage_properties_typeProperties_serviceEndpoint": {
 			"value": "https://adfcsvcosmosdev.blob.core.windows.net"
 		},
 		"BlobPrivateEndpoint_properties_privateLinkResourceId": {
@@ -16,6 +16,9 @@
 		},
 		"BlobPrivateEndpoint_properties_groupId": {
 			"value": "blob"
+		},
+		"CosmosDb_properties_typeProperties_connectionString_secretName": {
+			"value": "CosmosDbKey"
 		}
 	}
 }

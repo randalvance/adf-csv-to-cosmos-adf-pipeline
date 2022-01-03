@@ -7,11 +7,11 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "df-adf-csv-to-cosmos-dev"
 		},
-		"CosmosPeopleDB_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'CosmosPeopleDB'"
+		"AzureKeyVault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://my-keyvault-randal.vault.azure.net/"
 		},
-		"BlobStorage_properties_typeProperties_serviceEndpoint": {
+		"BlobInputStorage_properties_typeProperties_serviceEndpoint": {
 			"type": "string",
 			"defaultValue": "https://adfcsvcosmosdev.blob.core.windows.net"
 		},
@@ -22,6 +22,10 @@
 		"BlobPrivateEndpoint_properties_groupId": {
 			"type": "string",
 			"defaultValue": "blob"
+		},
+		"CosmosDb_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "CosmosDbKey"
 		}
 	},
 	"variables": {
@@ -35,11 +39,11 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Data Flow",
-						"type": "ExecuteDataFlow",
+						"name": "Copy data1",
+						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
-							"timeout": "1.00:00:00",
+							"timeout": "7.00:00:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -47,37 +51,44 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"dataflow": {
-								"referenceName": "DataFlow",
-								"type": "DataFlowReference",
-								"parameters": {
-									"identifier": {
-										"value": "'@{pipeline().parameters.identifier}'",
-										"type": "Expression"
-									}
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
 								},
-								"datasetParameters": {
-									"Blob": {
-										"fileName": {
-											"value": "@concat(pipeline().parameters.identifier,'.csv')",
-											"type": "Expression"
-										}
-									},
-									"CosmosDB": {
-										"collection": "people"
-									},
-									"CosmosDBErrors": {
-										"collection": "peopleErrors"
-									}
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
 								}
 							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
+							"sink": {
+								"type": "CosmosDbSqlApiSink",
+								"writeBehavior": "insert"
 							},
-							"traceLevel": "Fine"
-						}
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "CsvFile",
+								"type": "DatasetReference",
+								"parameters": {
+									"fileName": {
+										"value": "@concat(pipeline().parameters.identifier, '.csv')",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "CosmosDB",
+								"type": "DatasetReference",
+								"parameters": {
+									"collection": "people"
+								}
+							}
+						]
 					}
 				],
 				"policy": {
@@ -92,17 +103,17 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/DataFlow')]",
-				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+				"[concat(variables('factoryId'), '/datasets/CsvFile')]",
+				"[concat(variables('factoryId'), '/datasets/CosmosDB')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/CosmosDbDestination')]",
+			"name": "[concat(parameters('factoryName'), '/CosmosDB')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "CosmosPeopleDB",
+					"referenceName": "CosmosDb",
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
@@ -121,7 +132,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/CosmosPeopleDB')]"
+				"[concat(variables('factoryId'), '/linkedServices/CosmosDb')]"
 			]
 		},
 		{
@@ -130,7 +141,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "BlobStorage",
+					"referenceName": "BlobInputStorage",
 					"type": "LinkedServiceReference"
 				},
 				"parameters": {
@@ -186,38 +197,64 @@
 				]
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/BlobStorage')]"
+				"[concat(variables('factoryId'), '/linkedServices/BlobInputStorage')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/BlobStorage')]",
+			"name": "[concat(parameters('factoryName'), '/Json1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BlobInputStorage",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().fileName",
+							"type": "Expression"
+						},
+						"container": "output"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobInputStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureKeyVault')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('AzureKeyVault_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BlobInputStorage')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
 				"type": "AzureBlobStorage",
 				"typeProperties": {
-					"serviceEndpoint": "[parameters('BlobStorage_properties_typeProperties_serviceEndpoint')]",
+					"serviceEndpoint": "[parameters('BlobInputStorage_properties_typeProperties_serviceEndpoint')]",
 					"accountKind": "StorageV2"
-				},
-				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CosmosPeopleDB')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "CosmosDb",
-				"typeProperties": {
-					"connectionString": "[parameters('CosmosPeopleDB_connectionString')]"
 				},
 				"connectVia": {
 					"referenceName": "AutoResolveIntegrationRuntime",
@@ -273,14 +310,14 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "CosmosDbDestination",
+								"referenceName": "CosmosDB",
 								"type": "DatasetReference"
 							},
 							"name": "CosmosDB"
 						},
 						{
 							"dataset": {
-								"referenceName": "CosmosDbDestination",
+								"referenceName": "CosmosDB",
 								"type": "DatasetReference"
 							},
 							"name": "CosmosDBErrors"
@@ -308,7 +345,41 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/CsvFile')]",
-				"[concat(variables('factoryId'), '/datasets/CosmosDbDestination')]"
+				"[concat(variables('factoryId'), '/datasets/CosmosDB')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "CsvFile",
+								"type": "DatasetReference"
+							},
+							"name": "DataSource1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "CosmosDB",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"script": "source(output(\n\t\tseq as string,\n\t\tfirst as string,\n\t\tlast as string,\n\t\temail as string,\n\t\tgender as string,\n\t\tphone as string,\n\t\tpostal as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> DataSource1\nDataSource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'document',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tseq,\n\t\tfirst,\n\t\tlast,\n\t\temail,\n\t\tgender,\n\t\tphone,\n\t\tpostal\n\t)) ~> sink1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CsvFile')]",
+				"[concat(variables('factoryId'), '/datasets/CosmosDB')]"
 			]
 		},
 		{
@@ -328,6 +399,33 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CosmosDb')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "CosmosDb",
+				"typeProperties": {
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "[parameters('CosmosDb_properties_typeProperties_connectionString_secretName')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVault')]"
 			]
 		}
 	]
