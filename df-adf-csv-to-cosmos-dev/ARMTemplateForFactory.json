@@ -55,8 +55,8 @@
 								"referenceName": "DataFlow",
 								"type": "DataFlowReference",
 								"parameters": {
-									"identifier": {
-										"value": "'@{pipeline().parameters.identifier}'",
+									"pipelineRunId": {
+										"value": "'@{pipeline().RunId}'",
 										"type": "Expression"
 									}
 								},
@@ -194,38 +194,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Json1')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "BlobInputStorage",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"fileName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@dataset().fileName",
-							"type": "Expression"
-						},
-						"container": "output"
-					}
-				},
-				"schema": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/BlobInputStorage')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/AzureKeyVault')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -333,41 +301,7 @@
 							"name": "AddImportIdentifier"
 						}
 					],
-					"script": "parameters{\n\tidentifier as string\n}\nsource(output(\n\t\tseq as string,\n\t\tfirst as string,\n\t\tlast as string,\n\t\temail as string,\n\t\tgender as string,\n\t\tphone as string,\n\t\tpostal as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> Blob\nAddImportIdentifier assert(expectTrue(!isNull(email), false, 'assertEmailRequired', null, 'Email is required.'),\n\texpectTrue(!isNull(gender), false, 'assertGenderRequired', null, 'Gender is required.')) ~> Validate\nValidate split(!isError(),\n\tdisjoint: false) ~> SeparateErrorRows@(CosmosDB, CosmosDBErrors)\nSeparateErrorRows@CosmosDB alterRow(upsertIf(true())) ~> AllowUpsert1\nSeparateErrorRows@CosmosDBErrors alterRow(upsertIf(true())) ~> AllowUpsert2\nBlob derive(ImportIdentifier = $identifier) ~> AddImportIdentifier\nAllowUpsert1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tformat: 'document',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CosmosDB\nAllowUpsert2 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tformat: 'document',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CosmosDBErrors"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/CsvFile')]",
-				"[concat(variables('factoryId'), '/datasets/CosmosDB')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "CsvFile",
-								"type": "DatasetReference"
-							},
-							"name": "DataSource1"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "CosmosDB",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [],
-					"script": "source(output(\n\t\tseq as string,\n\t\tfirst as string,\n\t\tlast as string,\n\t\temail as string,\n\t\tgender as string,\n\t\tphone as string,\n\t\tpostal as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> DataSource1\nDataSource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'document',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tmapColumn(\n\t\tseq,\n\t\tfirst,\n\t\tlast,\n\t\temail,\n\t\tgender,\n\t\tphone,\n\t\tpostal\n\t)) ~> sink1"
+					"script": "parameters{\n\tpipelineRunId as string\n}\nsource(output(\n\t\tseq as string,\n\t\tfirst as string,\n\t\tlast as string,\n\t\temail as string,\n\t\tgender as string,\n\t\tphone as string,\n\t\tpostal as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> Blob\nAddImportIdentifier assert(expectTrue(!isNull(email), false, 'assertEmailRequired', null, 'Email is required.'),\n\texpectTrue(!isNull(gender), false, 'assertGenderRequired', null, 'Gender is required.')) ~> Validate\nValidate split(!isError(),\n\tdisjoint: false) ~> SeparateErrorRows@(CosmosDB, CosmosDBErrors)\nSeparateErrorRows@CosmosDB alterRow(upsertIf(true())) ~> AllowUpsert1\nSeparateErrorRows@CosmosDBErrors alterRow(upsertIf(true())) ~> AllowUpsert2\nBlob derive(ImportIdentifier = $pipelineRunId) ~> AddImportIdentifier\nAllowUpsert1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tformat: 'document',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CosmosDB\nAllowUpsert2 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tformat: 'document',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CosmosDBErrors"
 				}
 			},
 			"dependsOn": [
