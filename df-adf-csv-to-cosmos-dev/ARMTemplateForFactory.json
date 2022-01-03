@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "df-adf-csv-to-cosmos-dev"
 		},
+		"CosmosDb_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDb'"
+		},
 		"AzureKeyVault_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://my-keyvault-randal.vault.azure.net/"
@@ -22,10 +26,6 @@
 		"BlobPrivateEndpoint_properties_groupId": {
 			"type": "string",
 			"defaultValue": "blob"
-		},
-		"CosmosDb_properties_typeProperties_connectionString_secretName": {
-			"type": "string",
-			"defaultValue": "CosmosDbKey"
 		}
 	},
 	"variables": {
@@ -39,11 +39,11 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Copy data1",
-						"type": "Copy",
+						"name": "dataflow1",
+						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
-							"timeout": "7.00:00:00",
+							"timeout": "1.00:00:00",
 							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
@@ -51,44 +51,27 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
+							"dataflow": {
+								"referenceName": "dataflow1",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"DataSource1": {
+										"fileName": {
+											"value": "@concat(pipeline().parameters.identifier,'.csv')",
+											"type": "Expression"
+										}
+									},
+									"sink1": {}
 								}
 							},
-							"sink": {
-								"type": "CosmosDbSqlApiSink",
-								"writeBehavior": "insert"
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
 							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "CsvFile",
-								"type": "DatasetReference",
-								"parameters": {
-									"fileName": {
-										"value": "@concat(pipeline().parameters.identifier, '.csv')",
-										"type": "Expression"
-									}
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "CosmosDB",
-								"type": "DatasetReference",
-								"parameters": {
-									"collection": "people"
-								}
-							}
-						]
+							"traceLevel": "Fine"
+						}
 					}
 				],
 				"policy": {
@@ -103,8 +86,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/CsvFile')]",
-				"[concat(variables('factoryId'), '/datasets/CosmosDB')]"
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
 			]
 		},
 		{
@@ -116,19 +99,11 @@
 					"referenceName": "CosmosDb",
 					"type": "LinkedServiceReference"
 				},
-				"parameters": {
-					"collection": {
-						"type": "string"
-					}
-				},
 				"annotations": [],
 				"type": "CosmosDbSqlApiCollection",
 				"schema": {},
 				"typeProperties": {
-					"collectionName": {
-						"value": "@dataset().collection",
-						"type": "Expression"
-					}
+					"collectionName": "people"
 				}
 			},
 			"dependsOn": [
@@ -409,13 +384,14 @@
 				"annotations": [],
 				"type": "CosmosDb",
 				"typeProperties": {
-					"connectionString": {
+					"connectionString": "[parameters('CosmosDb_connectionString')]",
+					"accountKey": {
 						"type": "AzureKeyVaultSecret",
 						"store": {
 							"referenceName": "AzureKeyVault",
 							"type": "LinkedServiceReference"
 						},
-						"secretName": "[parameters('CosmosDb_properties_typeProperties_connectionString_secretName')]"
+						"secretName": "CosmosDbKey"
 					}
 				},
 				"connectVia": {

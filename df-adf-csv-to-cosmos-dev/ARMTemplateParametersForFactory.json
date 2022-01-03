@@ -5,6 +5,9 @@
 		"factoryName": {
 			"value": "df-adf-csv-to-cosmos-dev"
 		},
+		"CosmosDb_connectionString": {
+			"value": ""
+		},
 		"AzureKeyVault_properties_typeProperties_baseUrl": {
 			"value": "https://my-keyvault-randal.vault.azure.net/"
 		},
@@ -16,9 +19,6 @@
 		},
 		"BlobPrivateEndpoint_properties_groupId": {
 			"value": "blob"
-		},
-		"CosmosDb_properties_typeProperties_connectionString_secretName": {
-			"value": "CosmosDbKey"
 		}
 	}
 }

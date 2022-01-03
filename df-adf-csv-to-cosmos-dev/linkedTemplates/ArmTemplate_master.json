@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "df-adf-csv-to-cosmos-dev"
 		},
+		"CosmosDb_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDb'"
+		},
 		"AzureKeyVault_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://my-keyvault-randal.vault.azure.net/"
@@ -22,10 +26,6 @@
 		"BlobPrivateEndpoint_properties_groupId": {
 			"type": "string",
 			"defaultValue": "blob"
-		},
-		"CosmosDb_properties_typeProperties_connectionString_secretName": {
-			"type": "string",
-			"defaultValue": "CosmosDbKey"
 		},
 		"containerUri": {
 			"type": "string",
@@ -54,6 +54,9 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"CosmosDb_connectionString": {
+						"value": "[parameters('CosmosDb_connectionString')]"
+					},
 					"AzureKeyVault_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVault_properties_typeProperties_baseUrl')]"
 					},
@@ -65,9 +68,6 @@
 					},
 					"BlobInputStorage_properties_typeProperties_serviceEndpoint": {
 						"value": "[parameters('BlobInputStorage_properties_typeProperties_serviceEndpoint')]"
-					},
-					"CosmosDb_properties_typeProperties_connectionString_secretName": {
-						"value": "[parameters('CosmosDb_properties_typeProperties_connectionString_secretName')]"
 					}
 				}
 			},
