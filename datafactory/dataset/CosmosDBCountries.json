@@ -1,0 +1,25 @@
+{
+	"name": "CosmosDBCountries",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CosmosDb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "CosmosDbSqlApiCollection",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"code": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				}
+			}
+		},
+		"typeProperties": {
+			"collectionName": "countries"
+		}
+	}
+}

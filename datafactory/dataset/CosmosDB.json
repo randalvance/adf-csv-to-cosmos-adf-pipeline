@@ -14,10 +14,7 @@
 		"type": "CosmosDbSqlApiCollection",
 		"schema": {},
 		"typeProperties": {
-			"collectionName": {
-				"value": "@dataset().collection",
-				"type": "Expression"
-			}
+			"collectionName": "people"
 		}
 	}
 }
