@@ -1,0 +1,10 @@
+{
+	"name": "AzureKeyVault",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://kv-adf-csv-to-cosmos.vault.azure.net/"
+		}
+	}
+}
