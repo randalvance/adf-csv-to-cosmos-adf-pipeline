@@ -10,6 +10,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "Blob"
+				},
+				{
+					"dataset": {
+						"referenceName": "CosmosDBCountries",
+						"type": "DatasetReference"
+					},
+					"name": "CountryLookup"
 				}
 			],
 			"sinks": [
@@ -43,9 +50,12 @@
 				},
 				{
 					"name": "AddImportIdentifier"
+				},
+				{
+					"name": "Lookup1"
 				}
 			],
-			"script": "parameters{\n\tpipelineRunId as string\n}\nsource(output(\n\t\tseq as string,\n\t\tfirst as string,\n\t\tlast as string,\n\t\temail as string,\n\t\tgender as string,\n\t\tphone as string,\n\t\tpostal as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> Blob\nAddImportIdentifier assert(expectTrue(!isNull(email), false, 'assertEmailRequired', null, 'Email is required.'),\n\texpectTrue(!isNull(gender), false, 'assertGenderRequired', null, 'Gender is required.')) ~> Validate\nValidate split(!isError(),\n\tdisjoint: false) ~> SeparateErrorRows@(CosmosDB, CosmosDBErrors)\nSeparateErrorRows@CosmosDB alterRow(upsertIf(true())) ~> AllowUpsert1\nSeparateErrorRows@CosmosDBErrors alterRow(upsertIf(true())) ~> AllowUpsert2\nBlob derive(ImportIdentifier = $pipelineRunId) ~> AddImportIdentifier\nAllowUpsert1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tformat: 'document',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CosmosDB\nAllowUpsert2 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tformat: 'document',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CosmosDBErrors"
+			"script": "parameters{\n\tpipelineRunId as string\n}\nsource(output(\n\t\tseq as string,\n\t\tfirst as string,\n\t\tlast as string,\n\t\temail as string,\n\t\tgender as string,\n\t\tphone as string,\n\t\tpostal as string,\n\t\tcountryCode as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> Blob\nsource(output(\n\t\tcode as string,\n\t\tname as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'document',\n\tsystemColumns: false) ~> CountryLookup\nAddImportIdentifier assert(expectTrue(!isNull(email), false, 'assertEmailRequired', null, 'Email is required.'),\n\texpectTrue(!isNull(gender), false, 'assertGenderRequired', null, 'Gender is required.')) ~> Validate\nValidate split(!isError(),\n\tdisjoint: false) ~> SeparateErrorRows@(CosmosDB, CosmosDBErrors)\nSeparateErrorRows@CosmosDB alterRow(upsertIf(true())) ~> AllowUpsert1\nSeparateErrorRows@CosmosDBErrors alterRow(upsertIf(true())) ~> AllowUpsert2\nLookup1 derive(ImportIdentifier = $pipelineRunId) ~> AddImportIdentifier\nBlob, CountryLookup lookup(countryCode == code,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> Lookup1\nAllowUpsert1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tformat: 'document',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CosmosDB\nAllowUpsert2 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tformat: 'document',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CosmosDBErrors"
 		}
 	}
 }

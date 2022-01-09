@@ -54,6 +54,10 @@
 			{
 				"name": "postal",
 				"type": "String"
+			},
+			{
+				"name": "countryCode",
+				"type": "String"
 			}
 		]
 	}
