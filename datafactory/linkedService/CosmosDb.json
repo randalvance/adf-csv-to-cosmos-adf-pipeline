@@ -10,8 +10,8 @@
 					"referenceName": "AzureKeyVault",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "cosmos-db-primary-key",
-				"secretVersion": "9436ff2b2e41458890a7091ba366e1d5"
+				"secretName": "cosmos-db-connection-string",
+				"secretVersion": "9f88482710f14dd7a5c3fe5f55d95c36"
 			}
 		},
 		"connectVia": {
